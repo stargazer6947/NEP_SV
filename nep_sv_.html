@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEP-SV Stone Village Announcement Board</title>
+    <style>
+        /* ==========================================
+           1. CSS VARIABLES & BASE STYLES
+           ========================================== */
+        :root {
+            --primary-red: #d32f2f;
+            --dark-red: #b71c1c;
+            --bg-light: #e0e0e0;
+            --card-bg: #ffffff;
+            --text-dark: #212121;
+            --text-muted: #666666;
+            --shadow-standard: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --radius-main: 16px;
+            --radius-btn: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f2f2f2;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Mobile Container to replicate phone layout on desktop */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: #ededed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 25px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        /* ==========================================
+           2. HEADER SECTION
+           ========================================== */
+        header {
+            background-color: var(--primary-red);
+            color: #ffffff;
+            padding: 24px 20px 28px 20px;
+            position: relative;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .app-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .leader-btn {
+            background: transparent;
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            padding: 6px 16px;
+            border-radius: var(--radius-btn);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .leader-btn:hover, .leader-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .app-subtitle {
+            font-size: 1.05rem;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        /* ==========================================
+           3. MAIN CONTENT & FEATURED CARD
+           ========================================== */
+        main {
+            padding: 16px;
+            flex: 1;
+        }
+
+        /* Next Meeting Featured Card */
+        .featured-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.25);
+            border: 2px solid rgba(211, 47, 47, 0.15);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .featured-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .icon-box {
+            background-color: var(--primary-red);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .icon-box svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+        }
+
+        .featured-info h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .featured-info .date {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .reminder-text {
+            color: var(--primary-red);
+            font-size: 0.85rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 16px;
+        }
+
+        /* Filter Navigation Tabs */
+        .filter-nav {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 4px;
+            overflow-x: auto;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+        .filter-nav::-webkit-scrollbar {
+            display: none; /* Hide scrollbar Chrome/Safari */
+        }
+
+        .filter-tab {
+            background: none;
+            border: none;
+            font-weight: 800;
+            font-size: 0.78rem;
+            color: #757575;
+            padding: 6px 4px;
+            cursor: pointer;
+            position: relative;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .filter-tab.active {
+            color: var(--primary-red);
+        }
+
+        .filter-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-red);
+            border-radius: 2px;
+        }
+
+        /* Section Heading */
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+            color: #111111;
+        }
+
+        /* ==========================================
+           4. ANNOUNCEMENT LIST & CARDS
+           ========================================== */
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .announcement-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            transition: transform 0.15s ease;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #111;
+            padding-right: 10px;
+        }
+
+        /* Category Badges */
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 0;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .badge-clean-up { color: #1e88e5; }
+        .badge-meeting { color: #8e24aa; }
+        .badge-emergency { color: #d32f2f; }
+        .badge-activity { color: #43a047; }
+
+        .card-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card-details {
+            font-size: 0.9rem;
+            color: #424242;
+            line-height: 1.4;
+            white-space: pre-line;
+        }
+
+        .delete-btn {
+            background-color: #ffebee;
+            color: var(--primary-red);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 12px;
+            display: inline-block;
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* ==========================================
+           5. FOOTER STYLES
+           ========================================== */
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid #e0e0e0;
+            padding: 20px 16px;
+            margin-top: 24px;
+            text-align: center;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .footer-brand {
+            font-weight: 800;
+            color: var(--primary-red);
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+
+        .footer-contact {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .footer-contact strong {
+            color: var(--primary-red);
+        }
+
+        .footer-copy {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ==========================================
+           6. LEADER PORTAL / MODAL STYLES
+           ========================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 88%;
+            max-width: 380px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #b71c1c;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #666;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon span {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-red);
+        }
+
+        .input-with-icon .form-control {
+            padding-left: 36px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+            border: 1.5px solid transparent;
+        }
+
+        .btn-cancel {
+            background: #ffffff;
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: #ffffff;
+        }
+
+        /* Leader Banner Mode */
+        .leader-mode-bar {
+            background: #ffecb3;
+            color: #8f6b00;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-exit-leader {
+            background: #8f6b00;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="header-top">
+                <div class="app-title">NEP-SV</div>
+                <button class="leader-btn" id="leaderToggleBtn" onclick="openLeaderModal()">LEADER</button>
+            </div>
+            <div class="app-subtitle">Stone Village Announcement Board</div>
+        </header>
+
+        <!-- Leader Mode Status Banner -->
+        <div id="leaderBanner" class="leader-mode-bar hidden">
+            <span>Logged in as Village Leader</span>
+            <button class="btn-exit-leader" onclick="logoutLeader()">Exit Leader Mode</button>
+        </div>
+
+        <!-- Main Content Body -->
+        <main>
+            <!-- Featured Next Meeting Card -->
+            <section class="featured-card">
+                <div class="featured-header">
+                    <div class="icon-box">
+                        <!-- Group Icon -->
+                        <svg viewBox="0 0 24 24">
+                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                        </svg>
+                    </div>
+                    <div class="featured-info">
+                        <h2>NEXT MEETING:</h2>
+                        <div class="date" id="featuredDate">Nov. 30, 2026</div>
+                    </div>
+                </div>
+
+                <div class="reminder-text" id="featuredReminder">
+                    Reminder: Bring your Barangay ID for attendance check. Thank you!
+                </div>
+
+                <!-- Filter Tabs -->
+                <nav class="filter-nav">
+                    <button class="filter-tab active" onclick="setFilter('ALL', this)">ALL</button>
+                    <button class="filter-tab" onclick="setFilter('MEETING', this)">MEETING</button>
+                    <button class="filter-tab" onclick="setFilter('CLEAN-UP', this)">CLEAN-UP</button>
+                    <button class="filter-tab" onclick="setFilter('EMERGENCY', this)">EMERGENCY</button>
+                    <button class="filter-tab" onclick="setFilter('ACTIVITY', this)">ACTIVITY</button>
+                </nav>
+            </section>
+
+            <!-- Announcements Header & Add Button for Leader -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 class="section-title" style="margin-bottom:0;">Announcements</h3>
+                <button id="addAnnouncementBtn" class="leader-btn hidden" style="background: var(--primary-red); border: none; padding: 6px 12px;" onclick="openAddModal()">+ Add New</button>
+            </div>
+
+            <!-- Dynamic Announcements List -->
+            <div class="announcement-list" id="announcementList">
+                <!-- Javascript will render announcement items here -->
+            </div>
+        </main>
+
+        <!-- Footer Section -->
+        <footer>
+            <div class="footer-brand">NEP-SV Announcement Board</div>
+            <div class="footer-contact">
+                <strong>Emergency Hotlines:</strong> 911 | (02) 8123-4567<br>
+                Barangay Hall Office Hours: Mon-Fri 8:00 AM - 5:00 PM
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Stone Village (NEP-SV) Community. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <!-- ==========================================
+       7. MODAL DIALOGS (LOGIN & ADD FORM)
+       ========================================== -->
+    
+    <!-- Leader Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeLoginModal()">&#10005;</button>
+            <h3 class="modal-title">Leader Login</h3>
+            <form onsubmit="handleLeaderLogin(event)">
+                <div class="form-group">
+                    <label for="pinInput">PIN</label>
+                    <div class="input-with-icon">
+                        <span>&#128274;</span>
+                        <input type="password" id="pinInput" class="form-control" placeholder="••••" required autofocus maxlength="10">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeLoginModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Unlock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Announcement Modal (Leader Only) -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeAddModal()">&#10005;</button>
+            <h3 class="modal-title">New Announcement</h3>
+            <form onsubmit="handleCreateAnnouncement(event)">
+                <div class="form-group">
+                    <label for="newTitle">Title</label>
+                    <input type="text" id="newTitle" class="form-control" placeholder="e.g. Water Interruption Notice" required>
+                </div>
+                <div class="form-group">
+                    <label for="newCategory">Category</label>
+                    <select id="newCategory" class="form-control" required>
+                        <option value="MEETING">MEETING</option>
+                        <option value="CLEAN-UP" selected>CLEAN-UP</option>
+                        <option value="EMERGENCY">EMERGENCY</option>
+                        <option value="ACTIVITY">ACTIVITY</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newDate">Date & Time</label>
+                    <input type="text" id="newDate" class="form-control" placeholder="e.g. Oct 28, 2024 • 5:00 PM" required>
+                </div>
+                <div class="form-group">
+                    <label for="newDetails">Details</label>
+                    <textarea id="newDetails" class="form-control" rows="3" placeholder="Enter full details here..." required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       7. JAVASCRIPT LOGIC
+       ========================================== -->
+    <script>
+        // --- CONSTANTS & STATE ---
+        const DEFAULT_PIN = "1234";
+        const STORAGE_KEY = "NEP_SV_ANNOUNCEMENTS";
+
+        // Initial Seed Data if LocalStorage is empty
+        const initialAnnouncements = [
+            {
+                id: "1",
+                title: "Brgy. Clean-up Drive",
+                category: "CLEAN-UP",
+                date: "Nov. 28, 2026 • 7:00 AM",
+                details: "Join us for the community clean-up drive. Meet at the Village Plaza. Please bring your gloves and trash bags!"
+            },
+            {
+                id: "2",
+                title: "Water Service Interruption",
+                category: "EMERGENCY",
+                date: "Nov. 26, 2026 • 8:00 AM - 5:00 PM",
+                details: "Scheduled water pipe replacement along Main Street. Please store enough water ahead of time."
+            },
+            {
+                id: "3",
+                title: "Annual Sportsfest Registration",
+                category: "ACTIVITY",
+                date: "Dec. 05, 2026",
+                details: "Basketball and Volleyball tournament registration is now open at the Barangay Hall."
+            }
+        ];
+
+        let announcements = [];
+        let currentFilter = 'ALL';
+        let isLeader = false;
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAnnouncements();
+            renderAnnouncements();
+        });
+
+        // Load data from LocalStorage or seed default data
+        function loadAnnouncements() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    announcements = JSON.parse(saved);
+                } catch(e) {
+                    announcements = initialAnnouncements;
+                }
+            } else {
+                announcements = initialAnnouncements;
+                saveAnnouncements();
+            }
+        }
+
+        // Save data to LocalStorage
+        function saveAnnouncements() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(announcements));
+        }
+
+        // --- RENDERING ---
+        function renderAnnouncements() {
+            const container = document.getElementById('announcementList');
+            container.innerHTML = '';
+
+            // Filter logic
+            const filtered = announcements.filter(item => {
+                if (currentFilter === 'ALL') return true;
+                return item.category === currentFilter;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty-msg">No announcements found for ${currentFilter}.</div>`;
+                return;
+            }
+
+            // Render each card
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'announcement-card';
+                
+                // Get badge class name based on category
+                const badgeClass = `badge-${item.category.toLowerCase().replace(/\s+/g, '-')}`;
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">${escapeHtml(item.title)}</div>
+                        <span class="badge ${badgeClass}">${item.category}</span>
+                    </div>
+                    ${item.date ? `<div class="card-date">${escapeHtml(item.date)}</div>` : ''}
+                    <div class="card-details">${escapeHtml(item.details)}</div>
+                    ${isLeader ? `<button class="delete-btn" onclick="deleteAnnouncement('${item.id}')">Delete</button>` : ''}
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // --- FILTER TAB SWITCHING ---
+        function setFilter(category, element) {
+            currentFilter = category;
+            
+            // Update active tab styles
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+
+            renderAnnouncements();
+        }
+
+        // --- LEADER AUTHENTICATION ---
+        function openLeaderModal() {
+            if (isLeader) {
+                openAddModal(); // If already logged in, clicking button opens Add Form
+            } else {
+                document.getElementById('loginModal').classList.add('active');
+                document.getElementById('pinInput').value = '';
+                document.getElementById('pinInput').focus();
+            }
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+
+        function handleLeaderLogin(event) {
+            event.preventDefault();
+            const pin = document.getElementById('pinInput').value;
+            
+            if (pin === DEFAULT_PIN) {
+                isLeader = true;
+                closeLoginModal();
+                updateLeaderUI();
+                renderAnnouncements();
+            } else {
+                alert('Incorrect PIN. Please try again (Default PIN: 1234)');
+            }
+        }
+
+        function updateLeaderUI() {
+            const leaderBtn = document.getElementById('leaderToggleBtn');
+            const leaderBanner = document.getElementById('leaderBanner');
+            const addBtn = document.getElementById('addAnnouncementBtn');
+
+            if (isLeader) {
+                leaderBtn.innerText = "+ ADD";
+                leaderBanner.classList.remove('hidden');
+                addBtn.classList.remove('hidden');
+            } else {
+                leaderBtn.innerText = "LEADER";
+                leaderBanner.classList.add('hidden');
+                addBtn.classList.add('hidden');
+            }
+        }
+
+        function logoutLeader() {
+            isLeader = false;
+            updateLeaderUI();
+            renderAnnouncements();
+        }
+
+        // --- ADD / DELETE ANNOUNCEMENT LOGIC ---
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        function handleCreateAnnouncement(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('newTitle').value.trim();
+            const category = document.getElementById('newCategory').value;
+            const date = document.getElementById('newDate').value.trim();
+            const details = document.getElementById('newDetails').value.trim();
+
+            const newAnnouncement = {
+                id: Date.now().toString(),
+                title,
+                category,
+                date,
+                details
+            };
+
+            announcements.unshift(newAnnouncement); // Add to top of list
+            saveAnnouncements();
+            renderAnnouncements();
+
+            // Reset & close form
+            event.target.reset();
+            closeAddModal();
+        }
+
+        function deleteAnnouncement(id) {
+            if (confirm("Are you sure you want to delete this announcement?")) {
+                announcements = announcements.filter(item => item.id !== id);
+                saveAnnouncements();
+                renderAnnouncements();
+            }
+        }
+
+        // Helper to avoid XSS issues when rendering user input
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
