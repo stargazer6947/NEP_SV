@@ -1,366 +1,717 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEP-SV Stone Village Announcement Board</title>
-    <style>
-        /* ==========================================
-           1. CSS VARIABLES & BASE STYLES
-           ========================================== */
-        :root {
-            --primary-red: #d32f2f;
-            --dark-red: #b71c1c;
-            --bg-light: #e0e0e0;
-            --card-bg: #ffffff;
-            --text-dark: #212121;
-            --text-muted: #666666;
-            --shadow-standard: 0 4px 15px rgba(0, 0, 0, 0.1);
-            --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.08);
-            --radius-main: 16px;
-            --radius-btn: 24px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEP-SV | Stone Village Announcement Board</title>
+  <style>
+    /* ==========================================================================
+       1. GLOBAL RESET & BASE STYLES
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+    body {
+      background-color: #f3f4f6;
+      color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        body {
-            background-color: #f2f2f2;
-            color: var(--text-dark);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 0;
-        }
+    /* Container for the main viewport */
+    .app-container {
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
 
-        /* Mobile Container to replicate phone layout on desktop */
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            background-color: #ededed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 25px rgba(0,0,0,0.15);
-            position: relative;
-        }
+    /* ==========================================================================
+       2. HEADER & BANNER (FULL WIDTH LANDSCAPE)
+       ========================================================================== */
+    header {
+      background: linear-gradient(135deg, #d97706, #dc2626);
+      color: white;
+      padding: 24px 32px;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    }
 
-        /* ==========================================
-           2. HEADER SECTION
-           ========================================== */
-        header {
-            background-color: var(--primary-red);
-            color: #ffffff;
-            padding: 24px 20px 28px 20px;
-            position: relative;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
+    .brand-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
 
-        .app-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            text-transform: uppercase;
-        }
+    .brand-subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
 
-        .leader-btn {
-            background: transparent;
-            color: #ffffff;
-            border: 1.5px solid rgba(255, 255, 255, 0.8);
-            padding: 6px 16px;
-            border-radius: var(--radius-btn);
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.2s ease;
-        }
+    .btn-leader {
+      border: 2px solid white;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+    }
 
-        .leader-btn:hover, .leader-btn:active {
-            background: rgba(255, 255, 255, 0.2);
-        }
+    .btn-leader:hover {
+      background: white;
+      color: #dc2626;
+    }
 
-        .app-subtitle {
-            font-size: 1.05rem;
-            font-weight: 600;
-            opacity: 0.95;
-        }
+    .leader-bar {
+      display: none;
+      background: #fef2f2;
+      border-bottom: 2px solid #fca5a5;
+      padding: 12px 32px;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-        /* ==========================================
-           3. MAIN CONTENT & FEATURED CARD
-           ========================================== */
-        main {
-            padding: 16px;
-            flex: 1;
-        }
+    .leader-bar.active {
+      display: flex;
+    }
 
-        /* Next Meeting Featured Card */
-        .featured-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.25);
-            border: 2px solid rgba(211, 47, 47, 0.15);
-            margin-bottom: 20px;
-            position: relative;
-        }
+    .leader-status-text {
+      color: #991b1b;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .featured-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            margin-bottom: 12px;
-        }
+    .btn-action-sm {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-        .icon-box {
-            background-color: var(--primary-red);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+    /* ==========================================================================
+       3. DESKTOP MAIN LAYOUT (SIDE-BY-SIDE LANDSCAPE)
+       ========================================================================== */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 32px;
+      flex: 1;
+    }
 
-        .icon-box svg {
-            width: 28px;
-            height: 28px;
-            fill: currentColor;
-        }
+    @media (min-width: 900px) {
+      .main-content {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        align-items: start;
+      }
+    }
 
-        .featured-info h2 {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            line-height: 1.2;
-        }
+    /* Left Sidebar: Hero Card & Filters */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
-        .featured-info .date {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--text-dark);
-        }
+    .next-meeting-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid #fee2e2;
+    }
 
-        .reminder-text {
-            color: var(--primary-red);
-            font-size: 0.85rem;
-            font-weight: 700;
-            line-height: 1.35;
-            margin-bottom: 16px;
-        }
+    .meeting-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
 
-        /* Filter Navigation Tabs */
-        .filter-nav {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 4px;
-            overflow-x: auto;
-            scrollbar-width: none; /* Hide scrollbar Firefox */
-        }
-        .filter-nav::-webkit-scrollbar {
-            display: none; /* Hide scrollbar Chrome/Safari */
-        }
+    .meeting-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 6px;
+    }
 
-        .filter-tab {
-            background: none;
-            border: none;
-            font-weight: 800;
-            font-size: 0.78rem;
-            color: #757575;
-            padding: 6px 4px;
-            cursor: pointer;
-            position: relative;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
+    .meeting-date {
+      color: #dc2626;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
 
-        .filter-tab.active {
-            color: var(--primary-red);
-        }
+    .meeting-details {
+      font-size: 0.9rem;
+      color: #4b5563;
+      line-height: 1.5;
+    }
 
-        .filter-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--primary-red);
-            border-radius: 2px;
-        }
+    /* Filter Controls */
+    .filter-section {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
 
-        /* Section Heading */
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            margin-bottom: 14px;
-            color: #111111;
-        }
+    .filter-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6b7280;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
 
-        /* ==========================================
-           4. ANNOUNCEMENT LIST & CARDS
-           ========================================== */
-        .announcement-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-        .announcement-card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 18px;
-            box-shadow: var(--shadow-card);
-            position: relative;
-            transition: transform 0.15s ease;
-        }
+    @media (min-width: 900px) {
+      .filter-tabs {
+        flex-direction: column;
+      }
+    }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-        }
+    .tab-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      color: #4b5563;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
 
-        .card-title {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #111;
-            padding-right: 10px;
-        }
+    .tab-btn:hover {
+      background: #f9fafb;
+    }
 
-        /* Category Badges */
-        .badge {
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 2px 0;
-            border-radius: 4px;
-            white-space: nowrap;
-        }
-        .badge-clean-up { color: #1e88e5; }
-        .badge-meeting { color: #8e24aa; }
-        .badge-emergency { color: #d32f2f; }
-        .badge-activity { color: #43a047; }
+    .tab-btn.active {
+      background: #dc2626;
+      color: white;
+      border-color: #dc2626;
+    }
 
-        .card-date {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
+    /* Right Section: Announcements Grid */
+    .board-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-        .card-details {
-            font-size: 0.9rem;
-            color: #424242;
-            line-height: 1.4;
-            white-space: pre-line;
-        }
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .delete-btn {
-            background-color: #ffebee;
-            color: var(--primary-red);
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            cursor: pointer;
-            margin-top: 12px;
-            display: inline-block;
-        }
+    .board-heading {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #111827;
+    }
 
-        .empty-msg {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
+    .announcement-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
 
-        /* ==========================================
-           5. FOOTER STYLES
-           ========================================== */
-        footer {
-            background-color: #ffffff;
-            border-top: 1px solid #e0e0e0;
-            padding: 20px 16px;
-            margin-top: 24px;
-            text-align: center;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
+    @media (min-width: 600px) {
+      .announcement-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-        .footer-brand {
-            font-weight: 800;
-            color: var(--primary-red);
-            font-size: 0.95rem;
-            margin-bottom: 6px;
-        }
+    @media (min-width: 1200px) {
+      .announcement-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-        .footer-contact {
-            font-size: 0.8rem;
-            color: var(--text-dark);
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
 
-        .footer-contact strong {
-            color: var(--primary-red);
-        }
+    .card-category {
+      align-self: flex-start;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
 
-        .footer-copy {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
+    .cat-MEETING { background: #dbeafe; color: #1e40af; }
+    .cat-CLEAN-UP { background: #dcfce7; color: #166534; }
+    .cat-EMERGENCY { background: #fee2e2; color: #991b1b; }
+    .cat-ACTIVITY { background: #fef3c7; color: #92400e; }
 
-        /* ==========================================
-           6. LEADER PORTAL / MODAL STYLES
-           ========================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 8px;
+    }
 
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+    .card-date {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
 
-        .modal-box {
-            background: #ffffff;
-            width: 88%;
-            max-width: 380px;
-            border-radius: 16px;
-            padding: 24px;
+    .card-details {
+      font-size: 0.9rem;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .card-delete-btn {
+      display: none;
+      margin-top: 16px;
+      align-self: flex-end;
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .is-leader .card-delete-btn {
+      display: block;
+    }
+
+    /* Empty state display */
+    .no-announcements {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: #9ca3af;
+      background: white;
+      border-radius: 12px;
+      border: 1px dashed #d1d5db;
+    }
+
+    /* ==========================================================================
+       4. MODALS (AUTHENTICATION & NEW ANNOUNCEMENT FORM)
+       ========================================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #374151;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn-cancel {
+      background: #e5e7eb;
+      color: #374151;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       5. FOOTER (WIDE DESKTOP LAYOUT)
+       ========================================================================== */
+    footer {
+      background: #111827;
+      color: #9ca3af;
+      padding: 32px;
+      margin-top: auto;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 2fr 1fr 1fr;
+      }
+    }
+
+    .footer-heading {
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .footer-text {
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="app">
+    
+    <!-- HEADER -->
+    <header>
+      <div class="header-top">
+        <div>
+          <h1 class="brand-title">NEP-SV</h1>
+          <p class="brand-subtitle">Stone Village Announcement Board</p>
+        </div>
+        <button class="btn-leader" id="leaderToggleBtn" onclick="openLoginModal()">LEADER</button>
+      </div>
+    </header>
+
+    <!-- LEADER STATUS BAR (Visible when unlocked) -->
+    <div class="leader-bar" id="leaderBar">
+      <div class="leader-status-text">
+        <span>🛡️ Leader Portal Unlocked</span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-action-sm" onclick="openAddModal()">+ New Announcement</button>
+        <button class="btn-action-sm" style="background: #6b7280;" onclick="logoutLeader()">Exit Portal</button>
+      </div>
+    </div>
+
+    <!-- MAIN SIDE-BY-SIDE CONTENT -->
+    <main class="main-content">
+
+      <!-- LEFT SIDEBAR -->
+      <aside class="sidebar">
+        
+        <!-- FEATURED HERO CARD -->
+        <div class="next-meeting-card">
+          <div class="meeting-badge">📅 NEXT MEETING</div>
+          <div class="meeting-title">General Assembly</div>
+          <div class="meeting-date">Nov. 30, 2026 • 5:00 PM</div>
+          <div class="meeting-details">
+            Reminder: Please bring your Barangay ID for attendance registration at the Purok Bato Covered Court.
+          </div>
+        </div>
+
+        <!-- CATEGORY FILTERS -->
+        <div class="filter-section">
+          <div class="filter-title">Filter Categories</div>
+          <div class="filter-tabs">
+            <button class="tab-btn active" onclick="setFilter('ALL', this)">ALL</button>
+            <button class="tab-btn" onclick="setFilter('MEETING', this)">MEETING</button>
+            <button class="tab-btn" onclick="setFilter('CLEAN-UP', this)">CLEAN-UP</button>
+            <button class="tab-btn" onclick="setFilter('EMERGENCY', this)">EMERGENCY</button>
+            <button class="tab-btn" onclick="setFilter('ACTIVITY', this)">ACTIVITY</button>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- RIGHT MAIN BOARD -->
+      <section class="board-section">
+        <div class="board-header">
+          <h2 class="board-heading">Community Board</h2>
+        </div>
+
+        <!-- Dynamic Card Container -->
+        <div class="announcement-grid" id="announcementsContainer"></div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-grid">
+        <div>
+          <div class="footer-heading">Stone Village Community</div>
+          <p class="footer-text">Providing real-time updates and public notices for all residents of Stone Village.</p>
+        </div>
+        <div>
+          <div class="footer-heading">Emergency Contacts</div>
+          <p class="footer-text">Hotline: (02) 8123-4567<br>Security Office: Gate 1</p>
+        </div>
+        <div>
+          <div class="footer-heading">Hall Hours</div>
+          <p class="footer-text">Mon - Fri: 8:00 AM - 5:00 PM<br>Sat: 8:00 AM - 12:00 PM</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-card">
+      <div class="modal-header">Leader Portal Access</div>
+      <div class="form-group">
+        <label for="pinInput">Enter Leader PIN (Default: 1234):</label>
+        <input type="password" id="pinInput" placeholder="••••">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('loginModal')">Cancel</button>
+        <button class="btn-submit" onclick="submitLogin()">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD ANNOUNCEMENT MODAL -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal-card">
+      <div class="modal-header">Post New Announcement</div>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="addTitle" placeholder="e.g. Tree Planting Activity">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="addCategory">
+          <option value="MEETING">MEETING</option>
+          <option value="CLEAN-UP">CLEAN-UP</option>
+          <option value="EMERGENCY">EMERGENCY</option>
+          <option value="ACTIVITY">ACTIVITY</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="addDate">
+      </div>
+      <div class="form-group">
+        <label>Details</label>
+        <textarea id="addDetails" rows="3" placeholder="Add information..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('addModal')">Cancel</button>
+        <button class="btn-submit" onclick="submitAnnouncement()">Post Announcement</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Initial Seed Data
+    const defaultData = [
+      { id: 1, title: 'Brgy. Clean-up Drive', category: 'CLEAN-UP', date: '2026-11-28', details: 'Join us for community clean-up. Meet at 7:00 AM at the village hall. Please bring trash bags.' },
+      { id: 2, title: 'Water Service Interruption', category: 'EMERGENCY', date: '2026-12-01', details: 'Scheduled maintenance from 8:00 AM to 1:00 PM. Please store sufficient water.' },
+      { id: 3, title: 'Annual Sports Fest', category: 'ACTIVITY', date: '2026-12-05', details: 'Registration for basketball and volleyball leagues is now open at the admin office.' }
+    ];
+
+    let announcements = JSON.parse(localStorage.getItem('nep_sv_items')) || defaultData;
+    let isLeaderMode = false;
+    let currentFilter = 'ALL';
+
+    // Render announcements to the desktop grid
+    function render() {
+      const container = document.getElementById('announcementsContainer');
+      const filtered = announcements.filter(item => currentFilter === 'ALL' || item.category === currentFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="no-announcements">No announcements under this category.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <div class="card">
+          <div>
+            <span class="card-category cat-${item.category}">${item.category}</span>
+            <div class="card-title">${item.title}</div>
+            <div class="card-date">📅 ${item.date}</div>
+            <div class="card-details">${item.details}</div>
+          </div>
+          <button class="card-delete-btn" onclick="deleteAnnouncement(${item.id})">Delete Item</button>
+        </div>
+      `).join('');
+
+      document.getElementById('app').classList.toggle('is-leader', isLeaderMode);
+    }
+
+    // Filter Switcher
+    function setFilter(cat, btn) {
+      currentFilter = cat;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    }
+
+    // Modal Control
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    function openLoginModal() {
+      if (isLeaderMode) {
+        openAddModal();
+      } else {
+        openModal('loginModal');
+      }
+    }
+
+    function openAddModal() {
+      openModal('addModal');
+    }
+
+    // Authentication Logic
+    function submitLogin() {
+      const pin = document.getElementById('pinInput').value;
+      if (pin === '1234') {
+        isLeaderMode = true;
+        document.getElementById('leaderBar').classList.add('active');
+        document.getElementById('leaderToggleBtn').textContent = '+ ADD';
+        closeModal('loginModal');
+        document.getElementById('pinInput').value = '';
+        render();
+      } else {
+        alert('Incorrect PIN. Please try again.');
+      }
+    }
+
+    function logoutLeader() {
+      isLeaderMode = false;
+      document.getElementById('leaderBar').classList.remove('active');
+      document.getElementById('leaderToggleBtn').textContent = 'LEADER';
+      render();
+    }
+
+    // Add & Delete CRUD
+    function submitAnnouncement() {
+      const title = document.getElementById('addTitle').value;
+      const category = document.getElementById('addCategory').value;
+      const date = document.getElementById('addDate').value;
+      const details = document.getElementById('addDetails').value;
+
+      if (!title || !date || !details) {
+        alert('Please complete all fields.');
+        return;
+      }
+
+      const newItem = { id: Date.now(), title, category, date, details };
+      announcements.unshift(newItem);
+      localStorage.setItem('nep_sv_items', JSON.stringify(announcements));
+      
+      closeModal('addModal');
+      document.getElementById('addTitle').value = '';
+      document.getElementById('addDetails').value = '';
+      render();
+    }
+
+    function deleteAnnouncement(id) {
+      if (confirm('Delete this announcement?')) {
+        announcements = announcements.filter(item => item.id !== id);
+        localStorage.setItem('nep_sv_items', JSON.stringify(announcements));
+        render();
+      }
+    }
+
+    // Initialize layout on load
+    render();
+  </script>
+</body>
+    </html>    padding: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             position: relative;
         }
