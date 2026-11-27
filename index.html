@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEP-SV | Stone Village Announcement Board</title>
+  <title>NEP-PB | Purok Bato Announcement Board</title>
   <style>
     /* ==========================================================================
        1. GLOBAL RESET & BASE STYLES
@@ -39,7 +39,7 @@
        2. HEADER & BANNER (FULL WIDTH LANDSCAPE)
        ========================================================================== */
     header {
-      background: #DA1600;
+      background: #dc2626;
       color: white;
       padding: 24px 32px;
       box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
@@ -77,7 +77,7 @@
     }
 
     .btn-leader:hover {
-      background: white;
+      background: white; to 
       color: #dc2626;
     }
 
@@ -294,6 +294,7 @@
     .cat-CLEAN-UP { background: #dcfce7; color: #166534; }
     .cat-EMERGENCY { background: #fee2e2; color: #991b1b; }
     .cat-ACTIVITY { background: #fef3c7; color: #92400e; }
+    .cat-CELEBRATION { background: #FEE6FF; color: #8B00A3; }
 
     .card-title {
       font-size: 1.1rem;
@@ -466,17 +467,17 @@
     <header>
       <div class="header-top">
         <div>
-          <h1 class="brand-title">NEP-SV</h1>
-          <p class="brand-subtitle">Stone Village Announcement Board</p>
+          <h1 class="brand-title">NEP-PB</h1>
+          <p class="brand-subtitle">Purok Bato Announcement Board</p>
         </div>
-        <button class="btn-leader" id="leaderToggleBtn" onclick="openLoginModal()">LEADER</button>
+        <button class="btn-leader" id="leaderToggleBtn" onclick="openLoginModal()">ADMIN</button>
       </div>
     </header>
 
     <!-- LEADER STATUS BAR (Visible when unlocked) -->
     <div class="leader-bar" id="leaderBar">
       <div class="leader-status-text">
-        <span>🛡️ Leader Portal Unlocked</span>
+        <span> Admin Portal Unlocked</span>
       </div>
       <div style="display: flex; gap: 8px;">
         <button class="btn-action-sm" onclick="openAddModal()">+ New Announcement</button>
@@ -502,7 +503,7 @@
 
         <!-- CATEGORY FILTERS -->
         <div class="filter-section">
-          <div class="filter-title">Filter Categories</div>
+          <div class="filter-title">Filter</div>
           <div class="filter-tabs">
             <button class="tab-btn active" onclick="setFilter('ALL', this)">ALL</button>
             <button class="tab-btn" onclick="setFilter('MEETING', this)">MEETING</button>
@@ -530,8 +531,8 @@
     <footer>
       <div class="footer-grid">
         <div>
-          <div class="footer-heading">Stone Village Community</div>
-          <p class="footer-text">Providing real-time updates and public notices for all residents of Stone Village.</p>
+          <div class="footer-heading">Purok Bato, Tiayon Community</div>
+          <p class="footer-text">Providing real-time updates and public notices for all residents of Purok Bato, Tiayon.</p>
         </div>
         <div>
           <div class="footer-heading">Emergency Contacts</div>
@@ -549,9 +550,9 @@
   <!-- LOGIN MODAL -->
   <div class="modal-overlay" id="loginModal">
     <div class="modal-card">
-      <div class="modal-header">Leader Portal Access</div>
+      <div class="modal-header">Admin Portal Access</div>
       <div class="form-group">
-        <label for="pinInput">Enter Leader PIN (Default: 1234):</label>
+        <label for="pinInput">Enter Admin PIN:</label>
         <input type="password" id="pinInput" placeholder="••••">
       </div>
       <div class="modal-actions">
@@ -576,6 +577,7 @@
           <option value="CLEAN-UP">CLEAN-UP</option>
           <option value="EMERGENCY">EMERGENCY</option>
           <option value="ACTIVITY">ACTIVITY</option>
+          <option value="CELEBRATION">CELEBRATION</option>
         </select>
       </div>
       <div class="form-group">
@@ -658,7 +660,7 @@
     // Authentication Logic
     function submitLogin() {
       const pin = document.getElementById('pinInput').value;
-      if (pin === '1234') {
+      if (pin === '1029') {
         isLeaderMode = true;
         document.getElementById('leaderBar').classList.add('active');
         document.getElementById('leaderToggleBtn').textContent = '+ ADD';
@@ -711,4 +713,4 @@
     render();
   </script>
 </body>
-                                                                                    </html>
+      </html>
